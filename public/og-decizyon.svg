@@ -1,0 +1,19 @@
+﻿<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#F7FBFA"/>
+  <rect x="80" y="80" width="1040" height="470" rx="32" fill="#FFFFFF" stroke="#E2F1EE"/>
+  <defs>
+    <linearGradient id="brandGradient" x1="140" y1="140" x2="260" y2="260" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#B6E23A"/>
+      <stop offset="0.5" stop-color="#22C07A"/>
+      <stop offset="1" stop-color="#0AA5A8"/>
+    </linearGradient>
+  </defs>
+  <path d="M160 140H260C288.719 140 312 163.281 312 192V260C312 288.719 288.719 312 260 312H210L174 338V312H160C131.281 312 108 288.719 108 260V192C108 163.281 131.281 140 160 140Z" fill="url(#brandGradient)"/>
+  <path d="M176 206C194 192 212 186 230 186C248 186 266 192 284 206L266 218C252 209 241 206 230 206C219 206 208 209 194 218L176 206Z" fill="white" opacity="0.9"/>
+  <path d="M180 244L272 214L242 278L232 256L180 244Z" fill="white"/>
+  <text x="360" y="230" font-family="Space Grotesk, sans-serif" font-size="60" fill="#0B6F6C">Decizyon</text>
+  <text x="360" y="290" font-family="Plus Jakarta Sans, sans-serif" font-size="28" fill="#4B6B68">Ticket Flow • Workflows corporativos com governança</text>
+  <rect x="140" y="360" width="900" height="12" rx="6" fill="#E2F1EE"/>
+  <rect x="140" y="400" width="700" height="12" rx="6" fill="#E2F1EE"/>
+  <rect x="140" y="440" width="760" height="12" rx="6" fill="#E2F1EE"/>
+</svg>

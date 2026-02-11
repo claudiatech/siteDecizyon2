@@ -1,0 +1,293 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum MembershipRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum SystemRole {
+  SUPPORT
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_CUSTOMER
+  RESOLVED
+  CLOSED
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TicketCategory {
+  BILLING
+  TECHNICAL
+  FEATURE_REQUEST
+  OTHER
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  TRIALING
+}
+
+enum InvoiceStatus {
+  DRAFT
+  OPEN
+  PAID
+  VOID
+}
+
+enum MessageAuthorType {
+  CUSTOMER
+  SUPPORT
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  LOST
+}
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  memberships          Membership[]
+  tickets              Ticket[]
+  subscriptions        Subscription[]
+  invoices             Invoice[]
+  auditLogs            AuditLog[]
+  knowledgeBaseArticles KnowledgeBaseArticle[]
+  announcements        Announcement[]
+  leads                Lead[]
+  defaultUsers          User[] @relation("DefaultOrganization")
+}
+
+model User {
+  id                     String      @id @default(cuid())
+  name                   String?
+  email                  String      @unique
+  passwordHash           String
+  systemRole             SystemRole?
+  defaultOrganizationId  String?
+  createdAt              DateTime    @default(now())
+  updatedAt              DateTime    @updatedAt
+
+  defaultOrganization Organization? @relation("DefaultOrganization", fields: [defaultOrganizationId], references: [id])
+  memberships          Membership[]
+  ticketsCreated       Ticket[]     @relation("TicketCreator")
+  ticketsAssigned      Ticket[]     @relation("TicketAssignee")
+  ticketMessages       TicketMessage[]
+  uploadedAttachments  TicketAttachment[] @relation("AttachmentUploader")
+  auditLogs            AuditLog[]   @relation("AuditActor")
+}
+
+model Membership {
+  id             String          @id @default(cuid())
+  userId         String
+  organizationId String
+  role           MembershipRole
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  user         User         @relation(fields: [userId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([userId, organizationId])
+  @@index([organizationId])
+}
+
+model Ticket {
+  id             String        @id @default(cuid())
+  organizationId String
+  createdById    String
+  assignedToId   String?
+  subject        String
+  description    String
+  status         TicketStatus  @default(OPEN)
+  priority       TicketPriority @default(MEDIUM)
+  category       TicketCategory @default(OTHER)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  organization Organization  @relation(fields: [organizationId], references: [id])
+  createdBy    User          @relation("TicketCreator", fields: [createdById], references: [id])
+  assignedTo   User?         @relation("TicketAssignee", fields: [assignedToId], references: [id])
+  messages     TicketMessage[]
+  attachments  TicketAttachment[]
+
+  @@index([organizationId])
+  @@index([status])
+}
+
+model TicketMessage {
+  id          String            @id @default(cuid())
+  ticketId    String
+  authorId    String
+  authorType  MessageAuthorType
+  body        String
+  createdAt   DateTime          @default(now())
+
+  ticket      Ticket     @relation(fields: [ticketId], references: [id])
+  author      User       @relation(fields: [authorId], references: [id])
+  attachments TicketAttachment[]
+
+  @@index([ticketId])
+}
+
+model TicketAttachment {
+  id          String   @id @default(cuid())
+  ticketId    String
+  messageId   String?
+  uploadedById String?
+  filename    String
+  url         String
+  mimeType    String
+  size        Int
+  createdAt   DateTime @default(now())
+
+  ticket     Ticket        @relation(fields: [ticketId], references: [id])
+  message    TicketMessage? @relation(fields: [messageId], references: [id])
+  uploadedBy User?         @relation("AttachmentUploader", fields: [uploadedById], references: [id])
+
+  @@index([ticketId])
+}
+
+model Plan {
+  id           String   @id @default(cuid())
+  name         String
+  priceMonthly Int
+  description  String
+  features     Json
+  createdAt    DateTime @default(now())
+
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id                  String             @id @default(cuid())
+  organizationId      String
+  planId              String
+  status              SubscriptionStatus @default(ACTIVE)
+  currentPeriodStart  DateTime
+  currentPeriodEnd    DateTime
+  nextBillingDate     DateTime?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  plan         Plan         @relation(fields: [planId], references: [id])
+  invoices     Invoice[]
+
+  @@index([organizationId])
+}
+
+model Invoice {
+  id              String        @id @default(cuid())
+  organizationId  String
+  subscriptionId  String?
+  amount          Int
+  currency        String
+  status          InvoiceStatus @default(OPEN)
+  dueDate         DateTime
+  paidAt          DateTime?
+  pdfUrl          String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id])
+
+  @@index([organizationId])
+}
+
+model AuditLog {
+  id             String   @id @default(cuid())
+  organizationId String?
+  actorId        String?
+  action         String
+  entity         String
+  entityId       String?
+  meta           Json?
+  createdAt      DateTime @default(now())
+
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  actor        User?         @relation("AuditActor", fields: [actorId], references: [id])
+
+  @@index([organizationId])
+}
+
+model Announcement {
+  id             String   @id @default(cuid())
+  organizationId String?
+  title          String
+  content        String
+  publishedAt    DateTime
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization? @relation(fields: [organizationId], references: [id])
+
+  @@index([organizationId])
+}
+
+model KnowledgeBaseArticle {
+  id             String   @id @default(cuid())
+  organizationId String?
+  title          String
+  slug           String   @unique
+  category       String
+  content        String
+  publishedAt    DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization? @relation(fields: [organizationId], references: [id])
+
+  @@index([organizationId])
+}
+
+model Lead {
+  id             String     @id @default(cuid())
+  organizationId String?
+  name           String
+  email          String
+  company        String?
+  message        String?
+  status         LeadStatus @default(NEW)
+  createdAt      DateTime   @default(now())
+
+  organization Organization? @relation(fields: [organizationId], references: [id])
+}
+
+model EmailLog {
+  id        String   @id @default(cuid())
+  to        String
+  subject   String
+  body      String
+  status    String
+  meta      Json?
+  createdAt DateTime @default(now())
+}
+
+

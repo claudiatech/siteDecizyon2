@@ -1,0 +1,66 @@
+﻿@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: "Plus Jakarta Sans";
+  --font-display: "Space Grotesk";
+
+  --background: 0 0% 100%;
+  --foreground: 222 47% 11%;
+  --primary: 174 70% 36%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 173 40% 96%;
+  --secondary-foreground: 222 47% 11%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215 16% 46%;
+  --accent: 210 40% 96%;
+  --accent-foreground: 222 47% 11%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --ring: 174 70% 36%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --brand: 174 70% 36%;
+  --brand-foreground: 0 0% 100%;
+  --brand-lime: 86 72% 55%;
+  --brand-teal: 168 68% 42%;
+  --brand-deep: 184 78% 30%;
+  --radius: 14px;
+}
+
+* {
+  @apply border-border;
+}
+
+body {
+  @apply bg-background text-foreground antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+}
+
+.gradient-grid {
+  background-image: radial-gradient(circle at 1px 1px, rgba(13, 148, 136, 0.12) 1px, transparent 0);
+  background-size: 32px 32px;
+}
+
+.section-divider {
+  background: linear-gradient(90deg, rgba(15, 23, 42, 0.08), rgba(15, 23, 42, 0));
+  height: 1px;
+  width: 100%;
+}
+
+.text-brand-gradient {
+  background: linear-gradient(135deg, hsl(var(--brand-lime)), hsl(var(--brand-teal)), hsl(var(--brand-deep)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

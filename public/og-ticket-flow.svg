@@ -1,0 +1,11 @@
+﻿<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#F8FAFC"/>
+  <rect x="80" y="80" width="1040" height="470" rx="32" fill="#FFFFFF" stroke="#E2E8F0"/>
+  <rect x="140" y="140" width="120" height="120" rx="24" fill="#2563EB"/>
+  <text x="210" y="215" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="56" fill="#FFFFFF">TF</text>
+  <text x="300" y="200" font-family="Space Grotesk, sans-serif" font-size="48" fill="#0F172A">Ticket Flow</text>
+  <text x="300" y="260" font-family="Plus Jakarta Sans, sans-serif" font-size="24" fill="#475569">Workflows corporativos com governança</text>
+  <rect x="140" y="320" width="920" height="12" rx="6" fill="#E2E8F0"/>
+  <rect x="140" y="360" width="640" height="12" rx="6" fill="#E2E8F0"/>
+  <rect x="140" y="400" width="720" height="12" rx="6" fill="#E2E8F0"/>
+</svg>
