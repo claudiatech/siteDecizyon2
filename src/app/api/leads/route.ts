@@ -2,9 +2,17 @@
 import { prisma } from "@/lib/db";
 import { contactSchema } from "@/lib/validators";
 import { sendEmail } from "@/lib/email";
+import type { SendEmailResult } from "@/lib/email";
 
 const SALES_INBOX = "contato@decizyon.com.br";
 const DEMO_MODE = process.env.DEMO_MODE === "true";
+
+function toFailureResult(fallbackMessage: string, error: unknown): SendEmailResult {
+  return {
+    status: "FAILED",
+    errorMessage: error instanceof Error ? error.message : fallbackMessage
+  };
+}
 
 export async function POST(request: Request) {
   const body = await request.json();
@@ -63,7 +71,7 @@ export async function POST(request: Request) {
     subject: "Recebemos sua solicitação de demonstração",
     body: confirmationBody,
     meta: { leadId, type: "lead-confirmation" }
-  });
+  }).catch((error) => toFailureResult("Falha no e-mail de confirmação", error));
 
   const notification = await sendEmail({
     to: SALES_INBOX,
@@ -71,7 +79,7 @@ export async function POST(request: Request) {
     body: adminBody,
     replyTo: parsed.data.email,
     meta: { leadId, type: "lead-notification", stored }
-  });
+  }).catch((error) => toFailureResult("Falha no e-mail para o time comercial", error));
 
   if (confirmation.status !== "SENT" || notification.status !== "SENT") {
     const details = {

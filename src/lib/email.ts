@@ -173,9 +173,7 @@ export async function sendEmail(params: {
       }
     });
   } catch (error) {
-    if (isProd) {
-      throw error;
-    }
+    // Log persistence must not block transactional e-mail delivery.
     console.warn("Email log failed", error);
   }
 
@@ -185,3 +183,4 @@ export async function sendEmail(params: {
 
   return { status, responseId, errorMessage };
 }
+
