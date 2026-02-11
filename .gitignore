@@ -12,3 +12,4 @@ out
 public/uploads/*
 !public/uploads/.gitkeep
 playwright-report
+tsconfig.tsbuildinfo
