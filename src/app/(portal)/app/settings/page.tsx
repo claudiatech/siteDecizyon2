@@ -20,19 +20,6 @@ const demoMembers = [
   { id: "m3", email: "support@ticketflow.com", name: "Equipe Support", role: "MEMBER" }
 ];
 
-type SettingsOrganization = {
-  id: string;
-  name: string;
-  slug: string;
-};
-
-type SettingsMember = {
-  id: string;
-  email: string;
-  name: string | null;
-  role: string;
-};
-
 export default async function SettingsPage() {
   const session = await getCurrentSession();
   if (!session?.user?.orgId) {
@@ -43,8 +30,8 @@ export default async function SettingsPage() {
     redirect("/support");
   }
 
-  let organization: SettingsOrganization | null = null;
-  let members: SettingsMember[] = [];
+  let organization: any = null;
+  let members: any[] = [];
 
   if (DEMO_MODE) {
     organization = demoOrg;
@@ -63,18 +50,12 @@ export default async function SettingsPage() {
       include: { user: true }
     });
 
-    members = memberships.map(
-      (membership: {
-        id: string;
-        role: string;
-        user: { email: string; name: string | null };
-      }): SettingsMember => ({
-        id: membership.id,
-        email: membership.user.email,
-        name: membership.user.name,
-        role: membership.role
-      })
-    );
+    members = memberships.map((membership) => ({
+      id: membership.id,
+      email: membership.user.email,
+      name: membership.user.name,
+      role: membership.role
+    }));
   }
 
   const canManage = session.user.orgRole

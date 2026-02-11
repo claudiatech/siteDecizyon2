@@ -23,14 +23,6 @@ export default async function SupportConsolePage({
     ? { status: searchParams.status as (typeof ticketStatuses)[number] }
     : {};
 
-  type SupportTicketRow = {
-    id: string;
-    subject: string;
-    status: string;
-    organization: { name: string };
-    createdBy: { email: string };
-  };
-
   const tickets = await prisma.ticket.findMany({
     where,
     orderBy: { createdAt: "desc" },
@@ -54,7 +46,7 @@ export default async function SupportConsolePage({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {tickets.map((ticket: SupportTicketRow) => (
+            {tickets.map((ticket) => (
               <TableRow key={ticket.id}>
                 <TableCell>
                   <Link className="font-medium text-primary" href={`/support/tickets/${ticket.id}`}>

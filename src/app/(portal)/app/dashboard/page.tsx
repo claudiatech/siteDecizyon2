@@ -62,11 +62,6 @@ export default async function DashboardPage() {
       nextBillingDate: demoData.billing.nextBillingDate
     };
   } else {
-    type TicketCountRow = {
-      status: string;
-      _count: { status: number };
-    };
-
     const [ticketCounts, invoice, sub] = await Promise.all([
       prisma.ticket.groupBy({
         by: ["status"],
@@ -83,7 +78,7 @@ export default async function DashboardPage() {
       })
     ]);
     counts = ticketCounts.reduce(
-      (acc: Record<string, number>, item: TicketCountRow) => {
+      (acc, item) => {
         acc[item.status] = item._count.status;
         return acc;
       },

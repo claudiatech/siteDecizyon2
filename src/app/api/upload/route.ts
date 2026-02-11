@@ -4,19 +4,11 @@ import { authOptions } from "@/lib/auth";
 import { saveUpload } from "@/lib/storage";
 
 export const runtime = "nodejs";
-const UPLOADS_ENABLED = process.env.UPLOADS_ENABLED === "true";
 
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
-  }
-
-  if (!UPLOADS_ENABLED) {
-    return NextResponse.json(
-      { error: "Upload de anexos está desativado temporariamente neste ambiente." },
-      { status: 503 }
-    );
   }
 
   const formData = await request.formData();

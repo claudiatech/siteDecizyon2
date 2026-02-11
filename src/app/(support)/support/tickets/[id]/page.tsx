@@ -19,14 +19,6 @@ export default async function SupportTicketDetailPage({
     redirect("/login");
   }
 
-  type SupportMessageRow = {
-    id: string;
-    createdAt: Date;
-    authorType: string;
-    body: string;
-    author: { name: string | null; email: string };
-  };
-
   const ticket = await prisma.ticket.findUnique({
     where: { id: params.id },
     include: {
@@ -73,7 +65,7 @@ export default async function SupportTicketDetailPage({
           <CardTitle>Timeline</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {ticket.messages.map((message: SupportMessageRow) => (
+          {ticket.messages.map((message) => (
             <div key={message.id} className="rounded-lg border bg-slate-50 p-4">
               <div className="flex items-center justify-between text-sm">
                 <p className="font-medium text-foreground">

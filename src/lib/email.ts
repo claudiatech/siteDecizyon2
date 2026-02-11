@@ -1,16 +1,19 @@
 ﻿import { prisma } from "@/lib/db";
 import nodemailer from "nodemailer";
 
-const SMTP_HOST = process.env.SMTP_HOST;
-const SMTP_PORT = Number(process.env.SMTP_PORT ?? 0);
-const SMTP_SECURE = process.env.SMTP_SECURE === "true";
-const SMTP_USER = process.env.SMTP_USER;
-const SMTP_PASS = process.env.SMTP_PASS;
-const SMTP_FROM = process.env.SMTP_FROM ?? "Decizyon <contato@decizyon.com.br>";
+const SMTP_FROM_DEFAULT = "Decizyon <contato@decizyon.com.br>";
 
 type EmailDeliveryStatus = "SENT" | "FAILED" | "MOCK";
-
 type SmtpAddressLike = string | { address?: string };
+
+type SmtpConfig = {
+  host?: string;
+  port: number;
+  secure: boolean;
+  user?: string;
+  pass?: string;
+  from: string;
+};
 
 export type SendEmailResult = {
   status: EmailDeliveryStatus;
@@ -39,8 +42,24 @@ function buildHtml(body: string) {
   `;
 }
 
-function hasSmtpConfig() {
-  return Boolean(SMTP_HOST && SMTP_PORT && SMTP_USER && SMTP_PASS);
+function getSmtpConfig(): SmtpConfig {
+  return {
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT ?? 0),
+    secure: process.env.SMTP_SECURE === "true",
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+    from: process.env.SMTP_FROM ?? SMTP_FROM_DEFAULT
+  };
+}
+
+function getMissingSmtpEnv(config: SmtpConfig) {
+  const missing: string[] = [];
+  if (!config.host) missing.push("SMTP_HOST");
+  if (!config.port) missing.push("SMTP_PORT");
+  if (!config.user) missing.push("SMTP_USER");
+  if (!config.pass) missing.push("SMTP_PASS");
+  return missing;
 }
 
 function normalizeAddress(value: SmtpAddressLike) {
@@ -70,30 +89,34 @@ export async function sendEmail(params: {
   replyTo?: string;
 }): Promise<SendEmailResult> {
   const isProd = process.env.NODE_ENV === "production";
+  const smtp = getSmtpConfig();
+  const missingSmtpEnv = getMissingSmtpEnv(smtp);
+  const hasSmtpConfig = missingSmtpEnv.length === 0;
+
   let status: EmailDeliveryStatus = "SENT";
   let responseId: string | undefined;
   let errorMessage: string | undefined;
 
-  if (!hasSmtpConfig()) {
+  if (!hasSmtpConfig) {
     status = "MOCK";
-    errorMessage = "SMTP not configured";
+    errorMessage = `SMTP not configured (${missingSmtpEnv.join(", ")})`;
     if (!isProd) {
-      console.log("Mock email sent", params);
+      console.log("Mock email sent", { ...params, errorMessage });
     }
   } else {
     try {
       const transporter = nodemailer.createTransport({
-        host: SMTP_HOST,
-        port: SMTP_PORT,
-        secure: SMTP_SECURE,
+        host: smtp.host,
+        port: smtp.port,
+        secure: smtp.secure,
         auth: {
-          user: SMTP_USER,
-          pass: SMTP_PASS
+          user: smtp.user,
+          pass: smtp.pass
         }
       });
 
       const info = await transporter.sendMail({
-        from: SMTP_FROM,
+        from: smtp.from,
         to: params.to,
         subject: params.subject,
         text: params.body,
@@ -143,7 +166,7 @@ export async function sendEmail(params: {
         status,
         meta: {
           ...(params.meta ?? {}),
-          provider: hasSmtpConfig() ? "smtp" : "mock",
+          provider: hasSmtpConfig ? "smtp" : "mock",
           responseId,
           error: errorMessage
         }

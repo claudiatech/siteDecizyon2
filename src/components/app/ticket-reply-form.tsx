@@ -17,7 +17,6 @@ export function TicketReplyForm({ ticketId }: { ticketId: string }) {
   const router = useRouter();
   const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
-  const uploadsEnabled = process.env.NEXT_PUBLIC_UPLOADS_ENABLED === "true";
   const form = useForm<z.infer<typeof ticketMessageSchema>>({
     resolver: zodResolver(ticketMessageSchema),
     defaultValues: { body: "" }
@@ -28,9 +27,7 @@ export function TicketReplyForm({ ticketId }: { ticketId: string }) {
     try {
       const formData = new FormData();
       formData.append("body", values.body);
-      if (uploadsEnabled) {
-        files.forEach((file) => formData.append("attachments", file));
-      }
+      files.forEach((file) => formData.append("attachments", file));
 
       const response = await fetch(`/api/tickets/${ticketId}/messages`, {
         method: "POST",
@@ -74,17 +71,11 @@ export function TicketReplyForm({ ticketId }: { ticketId: string }) {
         />
         <div className="space-y-2">
           <Label>Anexos</Label>
-          {uploadsEnabled ? (
-            <Input
-              type="file"
-              multiple
-              onChange={(event) => setFiles(Array.from(event.target.files ?? []))}
-            />
-          ) : (
-            <p className="text-xs text-muted-foreground">
-              Upload de anexos está desativado temporariamente neste ambiente.
-            </p>
-          )}
+          <Input
+            type="file"
+            multiple
+            onChange={(event) => setFiles(Array.from(event.target.files ?? []))}
+          />
         </div>
         <Button type="submit" disabled={loading}>
           {loading ? "Enviando..." : "Enviar"}

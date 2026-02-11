@@ -20,7 +20,6 @@ export default function NewTicketPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
-  const uploadsEnabled = process.env.NEXT_PUBLIC_UPLOADS_ENABLED === "true";
 
   const form = useForm<z.infer<typeof ticketSchema>>({
     resolver: zodResolver(ticketSchema),
@@ -40,9 +39,7 @@ export default function NewTicketPage() {
       formData.append("category", values.category);
       formData.append("priority", values.priority);
       formData.append("description", values.description);
-      if (uploadsEnabled) {
-        files.forEach((file) => formData.append("attachments", file));
-      }
+      files.forEach((file) => formData.append("attachments", file));
 
       const response = await fetch("/api/tickets", {
         method: "POST",
@@ -154,24 +151,16 @@ export default function NewTicketPage() {
               />
               <div className="space-y-2">
                 <Label>Anexos</Label>
-                {uploadsEnabled ? (
-                  <>
-                    <Input
-                      type="file"
-                      multiple
-                      onChange={(event) => {
-                        setFiles(Array.from(event.target.files ?? []));
-                      }}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Arquivos são salvos localmente em /public/uploads no modo desenvolvimento.
-                    </p>
-                  </>
-                ) : (
-                  <p className="text-xs text-muted-foreground">
-                    Upload de anexos está desativado temporariamente neste ambiente.
-                  </p>
-                )}
+                <Input
+                  type="file"
+                  multiple
+                  onChange={(event) => {
+                    setFiles(Array.from(event.target.files ?? []));
+                  }}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Arquivos são salvos localmente em /public/uploads no modo desenvolvimento.
+                </p>
               </div>
               <Button type="submit" disabled={loading}>
                 {loading ? "Enviando..." : "Enviar chamado"}

@@ -57,20 +57,18 @@ Acesse: `http://localhost:3000`
 
 ## Feature flags
 - `STRIPE_ENABLED=true` habilita estrutura de integração (MVP não cobra).
-- `UPLOADS_ENABLED=true` habilita upload de anexos (em produção Vercel mantenha `false` até migrar para storage persistente).
 - `TEAMS_WEBHOOK_URL` ativa o webhook (placeholder).
 
 ## Observações
 - **SSO**: existe placeholder em `src/lib/sso.ts` para futura integração.
-- **Storage**: upload local em `public/uploads` é apenas para dev; em Vercel os anexos devem ficar desativados (`UPLOADS_ENABLED=false`) até migrar para Blob/S3.
+- **Storage**: arquivos são salvos em `public/uploads` via `StorageProvider`.
 - **Email**: envio mockado grava em `EmailLog` e imprime no console em dev.
 
 ## Deploy (VPS/Cloud)
-1. Configure `DATABASE_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `DEMO_MODE=false`, `UPLOADS_ENABLED=false`.
-2. Configure SMTP (`SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`) para não falhar envio em produção.
-3. Suba o banco (Postgres gerenciado ou Docker).
-4. Execute `pnpm db:migrate` e `pnpm db:seed` (apenas primeira vez).
-5. Build e start:
+1. Configure `DATABASE_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`.
+2. Suba o banco (Postgres gerenciado ou Docker).
+3. Execute `pnpm db:migrate` e `pnpm db:seed` (apenas primeira vez).
+4. Build e start:
 
 ```bash
 pnpm build

@@ -17,14 +17,6 @@ export default async function AuditPage() {
     redirect("/app/dashboard");
   }
 
-  type AuditLogRow = {
-    id: string;
-    createdAt: Date;
-    action: string;
-    entity: string;
-    actor: { email: string } | null;
-  };
-
   const logs = await prisma.auditLog.findMany({
     where: { organizationId: session.user.orgId },
     orderBy: { createdAt: "desc" },
@@ -49,7 +41,7 @@ export default async function AuditPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {logs.map((log: AuditLogRow) => (
+            {logs.map((log) => (
               <TableRow key={log.id}>
                 <TableCell>{format(log.createdAt, "dd/MM/yyyy HH:mm")}</TableCell>
                 <TableCell>{log.action}</TableCell>

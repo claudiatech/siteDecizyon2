@@ -9,7 +9,6 @@ import { sendEmail } from "@/lib/email";
 import { sendTeamsNotification } from "@/lib/teams";
 
 export const runtime = "nodejs";
-const UPLOADS_ENABLED = process.env.UPLOADS_ENABLED === "true";
 
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
@@ -31,17 +30,9 @@ export async function POST(request: Request) {
   }
 
   const files = formData.getAll("attachments") as File[];
-  const hasAttachment = files.some((file) => file && file.size > 0);
-  if (!UPLOADS_ENABLED && hasAttachment) {
-    return NextResponse.json(
-      { error: "Upload de anexos está desativado temporariamente neste ambiente." },
-      { status: 400 }
-    );
-  }
-
   const uploads = [] as Awaited<ReturnType<typeof saveUpload>>[];
   for (const file of files) {
-    if (UPLOADS_ENABLED && file && file.size > 0) {
+    if (file && file.size > 0) {
       uploads.push(await saveUpload(file));
     }
   }

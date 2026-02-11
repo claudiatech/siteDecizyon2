@@ -102,8 +102,7 @@ export const authOptions: NextAuthOptions = {
 
         const membership = user.defaultOrganizationId
           ? user.memberships.find(
-              (item: { organizationId: string }) =>
-                item.organizationId === user.defaultOrganizationId
+              (item) => item.organizationId === user.defaultOrganizationId
             )
           : user.memberships[0];
 
