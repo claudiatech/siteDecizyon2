@@ -4,10 +4,11 @@ import { getCurrentSession } from "@/lib/auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
+import { isEnvFlagEnabled } from "@/lib/env";
 
 export const dynamic = "force-dynamic";
 
-const DEMO_MODE = process.env.DEMO_MODE === "true";
+const DEMO_MODE = isEnvFlagEnabled("DEMO_MODE");
 
 const demoData = {
   orgName: "Acme Corp",
@@ -262,3 +263,4 @@ function SupportForm() {
     </Card>
   );
 }
+

@@ -7,8 +7,9 @@ import { saveUpload } from "@/lib/storage";
 import { logAudit } from "@/lib/audit";
 import { sendEmail } from "@/lib/email";
 import { sendTeamsNotification } from "@/lib/teams";
+import { isEnvFlagEnabled } from "@/lib/env";
 
-const DEMO_MODE = process.env.DEMO_MODE === "true";
+const DEMO_MODE = isEnvFlagEnabled("DEMO_MODE");
 
 export const runtime = "nodejs";
 

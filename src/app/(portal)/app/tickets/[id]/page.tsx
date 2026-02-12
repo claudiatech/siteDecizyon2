@@ -3,12 +3,13 @@ import { format } from "date-fns";
 import { prisma } from "@/lib/db";
 import { getCurrentSession } from "@/lib/auth";
 import { isSupport } from "@/lib/rbac";
+import { isEnvFlagEnabled } from "@/lib/env";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TicketReplyForm } from "@/components/app/ticket-reply-form";
 
 export const dynamic = "force-dynamic";
-const DEMO_MODE = process.env.DEMO_MODE === "true";
+const DEMO_MODE = isEnvFlagEnabled("DEMO_MODE");
 
 const demoTickets = [
   {

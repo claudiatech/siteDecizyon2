@@ -3,9 +3,10 @@ import { prisma } from "@/lib/db";
 import { contactSchema } from "@/lib/validators";
 import { sendEmail } from "@/lib/email";
 import type { SendEmailResult } from "@/lib/email";
+import { isEnvFlagEnabled } from "@/lib/env";
 
 const SALES_INBOX = "contato@decizyon.com.br";
-const DEMO_MODE = process.env.DEMO_MODE === "true";
+const DEMO_MODE = isEnvFlagEnabled("DEMO_MODE");
 
 function toFailureResult(fallbackMessage: string, error: unknown): SendEmailResult {
   return {
@@ -100,3 +101,4 @@ export async function POST(request: Request) {
 
   return NextResponse.json({ ok: true, stored, warning: leadPersistError ?? undefined });
 }
+

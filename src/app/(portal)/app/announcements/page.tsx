@@ -8,9 +8,10 @@ import { cn } from "@/lib/utils";
 import { adminRoles } from "@/lib/rbac";
 import { AnnouncementComposer } from "@/components/app/announcement-composer";
 import { AlertTriangle, Megaphone, Rocket, Shield, Wrench } from "lucide-react";
+import { isEnvFlagEnabled } from "@/lib/env";
 
 export const dynamic = "force-dynamic";
-const DEMO_MODE = process.env.DEMO_MODE === "true";
+const DEMO_MODE = isEnvFlagEnabled("DEMO_MODE");
 
 const demoAnnouncements = [
   {
@@ -177,3 +178,4 @@ export default async function AnnouncementsPage() {
     </div>
   );
 }
+

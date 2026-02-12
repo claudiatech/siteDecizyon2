@@ -8,9 +8,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { BillingUpdateDialog } from "@/components/app/billing-update-dialog";
 import { PaymentMethodDialog } from "@/components/app/payment-method-dialog";
+import { isEnvFlagEnabled } from "@/lib/env";
 
 export const dynamic = "force-dynamic";
-const DEMO_MODE = process.env.DEMO_MODE === "true";
+const DEMO_MODE = isEnvFlagEnabled("DEMO_MODE");
 
 const demoPlans = [
   { id: "starter", name: "Starter", priceMonthly: 4900, description: "Até 50 usuários", features: [] },
@@ -187,3 +188,4 @@ export default async function BillingPage({
     </div>
   );
 }
+

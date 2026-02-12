@@ -5,8 +5,9 @@ import { prisma } from "@/lib/db";
 import { billingUpdateSchema } from "@/lib/validators";
 import { adminRoles } from "@/lib/rbac";
 import { logAudit } from "@/lib/audit";
+import { isEnvFlagEnabled } from "@/lib/env";
 
-const DEMO_MODE = process.env.DEMO_MODE === "true";
+const DEMO_MODE = isEnvFlagEnabled("DEMO_MODE");
 
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
@@ -69,3 +70,4 @@ export async function POST(request: Request) {
 
   return NextResponse.json({ ok: true });
 }
+

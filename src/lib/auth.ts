@@ -4,8 +4,9 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 import { logAudit } from "@/lib/audit";
+import { isEnvFlagEnabled } from "@/lib/env";
 
-const DEMO_MODE = process.env.DEMO_MODE === "true";
+const DEMO_MODE = isEnvFlagEnabled("DEMO_MODE");
 
 const demoUsers = [
   {
@@ -158,3 +159,4 @@ export const authOptions: NextAuthOptions = {
 export async function getCurrentSession() {
   return getServerSession(authOptions);
 }
+

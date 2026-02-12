@@ -2,9 +2,10 @@
 import { AppShell } from "@/components/app/app-shell";
 import { getCurrentSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { isEnvFlagEnabled } from "@/lib/env";
 
 export const dynamic = "force-dynamic";
-const DEMO_MODE = process.env.DEMO_MODE === "true";
+const DEMO_MODE = isEnvFlagEnabled("DEMO_MODE");
 
 export default async function AppLayout({
   children
@@ -41,3 +42,4 @@ export default async function AppLayout({
     </AppShell>
   );
 }
+

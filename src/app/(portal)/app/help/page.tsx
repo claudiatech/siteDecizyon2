@@ -7,9 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { adminRoles } from "@/lib/rbac";
 import { demoKnowledgeArticles } from "@/lib/demo-knowledge";
+import { isEnvFlagEnabled } from "@/lib/env";
 
 export const dynamic = "force-dynamic";
-const DEMO_MODE = process.env.DEMO_MODE === "true";
+const DEMO_MODE = isEnvFlagEnabled("DEMO_MODE");
 
 export default async function HelpPage({
   searchParams
@@ -99,3 +100,4 @@ export default async function HelpPage({
     </div>
   );
 }
+

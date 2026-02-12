@@ -1,5 +1,6 @@
 ﻿import { prisma } from "@/lib/db";
 import nodemailer from "nodemailer";
+import { getEnv, getEnvNumber, isEnvFlagEnabled } from "@/lib/env";
 
 const SMTP_FROM_DEFAULT = "Decizyon <contato@decizyon.com.br>";
 
@@ -44,12 +45,12 @@ function buildHtml(body: string) {
 
 function getSmtpConfig(): SmtpConfig {
   return {
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT ?? 0),
-    secure: process.env.SMTP_SECURE === "true",
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-    from: process.env.SMTP_FROM ?? SMTP_FROM_DEFAULT
+    host: getEnv("SMTP_HOST"),
+    port: getEnvNumber("SMTP_PORT", 0),
+    secure: isEnvFlagEnabled("SMTP_SECURE"),
+    user: getEnv("SMTP_USER"),
+    pass: getEnv("SMTP_PASS"),
+    from: getEnv("SMTP_FROM") || SMTP_FROM_DEFAULT
   };
 }
 
@@ -183,4 +184,6 @@ export async function sendEmail(params: {
 
   return { status, responseId, errorMessage };
 }
+
+
 

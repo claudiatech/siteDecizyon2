@@ -4,8 +4,9 @@ import { getCurrentSession } from "@/lib/auth";
 import { adminRoles } from "@/lib/rbac";
 import { knowledgeBaseSchema } from "@/lib/validators";
 import { slugify } from "@/lib/slugify";
+import { isEnvFlagEnabled } from "@/lib/env";
 
-const DEMO_MODE = process.env.DEMO_MODE === "true";
+const DEMO_MODE = isEnvFlagEnabled("DEMO_MODE");
 
 export async function POST(req: Request) {
   const session = await getCurrentSession();
@@ -50,3 +51,4 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Não foi possível salvar o artigo." }, { status: 400 });
   }
 }
+

@@ -4,9 +4,10 @@ import { prisma } from "@/lib/db";
 import { getCurrentSession } from "@/lib/auth";
 import { adminRoles, isSupport } from "@/lib/rbac";
 import { SettingsTabs } from "@/components/app/settings-tabs";
+import { isEnvFlagEnabled } from "@/lib/env";
 
 export const dynamic = "force-dynamic";
-const DEMO_MODE = process.env.DEMO_MODE === "true";
+const DEMO_MODE = isEnvFlagEnabled("DEMO_MODE");
 
 const demoOrg = {
   id: "demo-org",
@@ -87,3 +88,4 @@ export default async function SettingsPage() {
     </div>
   );
 }
+

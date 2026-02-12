@@ -4,9 +4,10 @@ import { getCurrentSession } from "@/lib/auth";
 import { adminRoles } from "@/lib/rbac";
 import { KnowledgeBaseEditor } from "@/components/app/knowledge-base-editor";
 import { findDemoArticle } from "@/lib/demo-knowledge";
+import { isEnvFlagEnabled } from "@/lib/env";
 
 export const dynamic = "force-dynamic";
-const DEMO_MODE = process.env.DEMO_MODE === "true";
+const DEMO_MODE = isEnvFlagEnabled("DEMO_MODE");
 
 export default async function HelpEditPage({
   params

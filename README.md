@@ -62,7 +62,7 @@ Acesse: `http://localhost:3000`
 ## Observações
 - **SSO**: existe placeholder em `src/lib/sso.ts` para futura integração.
 - **Storage**: arquivos são salvos em `public/uploads` via `StorageProvider`.
-- **Email**: envio mockado grava em `EmailLog` e imprime no console em dev.
+- **Email**: envio via SMTP (`SMTP_*`). Em dev, se SMTP nao estiver completo, cai para modo mock e grava em `EmailLog`.
 
 ## Deploy (VPS/Cloud)
 1. Configure `DATABASE_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`.
@@ -79,3 +79,4 @@ pnpm start
 - Dados de tickets e billing sempre escopados por Organization.
 - Roles: OWNER, ADMIN, MEMBER por organização; SUPPORT é role global (systemRole).
 - Console `/support` é exclusivo para usuários SUPPORT.
+

@@ -3,8 +3,9 @@ import { prisma } from "@/lib/db";
 import { getCurrentSession } from "@/lib/auth";
 import { adminRoles } from "@/lib/rbac";
 import { announcementSchema } from "@/lib/validators";
+import { isEnvFlagEnabled } from "@/lib/env";
 
-const DEMO_MODE = process.env.DEMO_MODE === "true";
+const DEMO_MODE = isEnvFlagEnabled("DEMO_MODE");
 
 const typePrefixes: Record<string, string> = {
   release: "Release",
@@ -59,3 +60,4 @@ export async function POST(req: Request) {
 
   return NextResponse.json({ ok: true, announcement });
 }
+

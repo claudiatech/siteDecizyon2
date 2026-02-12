@@ -4,8 +4,9 @@ import { getCurrentSession } from "@/lib/auth";
 import { adminRoles } from "@/lib/rbac";
 import { knowledgeBaseSchema } from "@/lib/validators";
 import { slugify } from "@/lib/slugify";
+import { isEnvFlagEnabled } from "@/lib/env";
 
-const DEMO_MODE = process.env.DEMO_MODE === "true";
+const DEMO_MODE = isEnvFlagEnabled("DEMO_MODE");
 
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
   const session = await getCurrentSession();

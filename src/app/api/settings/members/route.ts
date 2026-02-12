@@ -7,8 +7,9 @@ import { adminRoles } from "@/lib/rbac";
 import { membershipRoles } from "@/lib/constants";
 import { logAudit } from "@/lib/audit";
 import bcrypt from "bcryptjs";
+import { isEnvFlagEnabled } from "@/lib/env";
 
-const DEMO_MODE = process.env.DEMO_MODE === "true";
+const DEMO_MODE = isEnvFlagEnabled("DEMO_MODE");
 type MembershipRoleValue = (typeof membershipRoles)[number];
 
 export async function POST(request: Request) {
@@ -165,3 +166,4 @@ export async function DELETE(request: Request) {
 
   return NextResponse.json({ ok: true });
 }
+
